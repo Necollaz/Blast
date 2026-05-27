@@ -1,0 +1,1 @@
+export const ENTRY_POINT_INITIALIZED_MESSAGE: string = "Blast EntryPoint initialized";

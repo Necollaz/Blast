@@ -1,0 +1,1 @@
+export const GRID_POSITION_OUT_OF_BOUNDS_ERROR_MESSAGE: string = "Grid position is out of bounds: ";

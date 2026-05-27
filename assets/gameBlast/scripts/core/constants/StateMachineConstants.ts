@@ -1,0 +1,1 @@
+export const STATE_NOT_REGISTERED_ERROR_MESSAGE: string = "State is not registered: ";

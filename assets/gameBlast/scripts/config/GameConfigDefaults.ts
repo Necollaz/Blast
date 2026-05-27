@@ -1,0 +1,25 @@
+import { GameConfig } from "./GameConfig";
+
+const DEFAULT_ROWS = 9;
+const DEFAULT_COLUMNS = 9;
+const DEFAULT_COLORS_COUNT = 5;
+const DEFAULT_TARGET_SCORE = 500;
+const DEFAULT_MOVES_LIMIT = 25;
+const DEFAULT_MIN_GROUP_SIZE = 2;
+const DEFAULT_SHUFFLE_ATTEMPTS_LIMIT = 3;
+const DEFAULT_TELEPORT_BOOSTERS_COUNT = 5;
+const DEFAULT_BOMB_BOOSTERS_COUNT = 3;
+const DEFAULT_BOMB_RADIUS = 1;
+
+export const DEFAULT_GAME_CONFIG: GameConfig = {
+    rows: DEFAULT_ROWS,
+    columns: DEFAULT_COLUMNS,
+    colorsCount: DEFAULT_COLORS_COUNT,
+    targetScore: DEFAULT_TARGET_SCORE,
+    movesLimit: DEFAULT_MOVES_LIMIT,
+    minGroupSize: DEFAULT_MIN_GROUP_SIZE,
+    shuffleAttemptsLimit: DEFAULT_SHUFFLE_ATTEMPTS_LIMIT,
+    teleportBoostersCount: DEFAULT_TELEPORT_BOOSTERS_COUNT,
+    bombBoostersCount: DEFAULT_BOMB_BOOSTERS_COUNT,
+    bombRadius: DEFAULT_BOMB_RADIUS,
+};
