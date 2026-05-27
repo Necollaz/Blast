@@ -44,8 +44,12 @@ export default class TileView extends cc.Component {
         if (!this.sprite)
             this.sprite = this.getComponent(cc.Sprite);
 
-        if (this.sprite && spriteFrame)
-            this.sprite.spriteFrame = spriteFrame;
+        this.setSpriteFrame(spriteFrame);
+    }
+
+    public updateViewData(viewData: TileViewData, spriteFrame: cc.SpriteFrame): void {
+        this._viewData = viewData;
+        this.setSpriteFrame(spriteFrame);
     }
 
     public setPosition(position: cc.Vec2): void {
@@ -70,6 +74,14 @@ export default class TileView extends cc.Component {
 
     public playSpawnAnimation(targetPosition: cc.Vec2, delay: number, onComplete: () => void): void {
         this._animator.playSpawn(targetPosition, delay, onComplete);
+    }
+
+    private setSpriteFrame(spriteFrame: cc.SpriteFrame): void {
+        if (!this.sprite)
+            this.sprite = this.getComponent(cc.Sprite);
+
+        if (this.sprite && spriteFrame)
+            this.sprite.spriteFrame = spriteFrame;
     }
 
     private handleClick(): void {

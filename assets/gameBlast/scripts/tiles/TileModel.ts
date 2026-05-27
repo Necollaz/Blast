@@ -21,6 +21,10 @@ export class TileModel {
         this._column = position.column;
     }
 
+    public changeType(type: TileType): void {
+        this._type = type;
+    }
+
     public get id(): number {
         return this._id;
     }

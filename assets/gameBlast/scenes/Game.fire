@@ -658,6 +658,18 @@
         "__uuid__": "aca7c0ef-3d5f-4878-bd59-ce934bff821f"
       }
     ],
+    "rowRocketSprite": {
+      "__uuid__": "2238099b-d566-466b-b081-6ad580374f40"
+    },
+    "columnRocketSprite": {
+      "__uuid__": "b5f61ae0-13e9-4a02-9834-b33c726e8a37"
+    },
+    "radiusBombSprite": {
+      "__uuid__": "30e5e117-30b1-4487-9f5a-83a58805f99c"
+    },
+    "clearBoardBombSprite": {
+      "__uuid__": "5ca2b0ed-d043-4756-acd2-93c37c71a7e3"
+    },
     "cellSize": 100,
     "cellGap": 4,
     "tileScale": 1,

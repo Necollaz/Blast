@@ -13,6 +13,8 @@ import { TileModel } from "../../tiles/TileModel";
 import { TileMove } from "../../tiles/TileMove";
 import { TilePosition } from "../../tiles/TilePosition";
 import { TileSpawn } from "../../tiles/TileSpawn";
+import { TileType } from "../../tiles/TileType";
+import { TileUpdate } from "../../tiles/TileUpdate";
 import { GameRulesService } from "../rules/GameRulesService";
 import { GameSession } from "../session/GameSession";
 import { TurnResult } from "./TurnResult";
@@ -35,7 +37,7 @@ export class TurnResolver {
         this._session = session;
     }
 
-    public createPendingGroupTurn(tiles: TileModel[]): TurnResult {
+    public createPendingGroupTurn(tiles: TileModel[], preservedPosition: TilePosition = null): TurnResult {
         return {
             isValid: true,
             isModelResolved: false,
@@ -44,20 +46,41 @@ export class TurnResolver {
             selectedPosition: null,
             isWin: false,
             isLose: false,
-            destroyedPositions: this.getTilePositions(tiles),
+            destroyedPositions: this.getTilePositions(this.getTilesWithoutPosition(tiles, preservedPosition)),
             tileMoves: [],
             tileSpawns: [],
+            tileUpdates: [],
             scoreAdded: this._scoreService.calculateScore(tiles.length),
             totalScore: this._session.score,
             movesLeft: this._session.movesLeft,
         };
     }
 
-    public completeTilesDestroy(grid: GridModel, tiles: TileModel[], shouldSpendMove: boolean): TurnResult {
-        var destroyedPositions = this.getTilePositions(tiles);
+    public completeTilesDestroy(
+        grid: GridModel,
+        tiles: TileModel[],
+        shouldSpendMove: boolean,
+        superTilePosition: TilePosition = null,
+        superTileType: TileType = null
+    ): TurnResult {
+        var tilesToRemove = this.getTilesWithoutPosition(tiles, superTilePosition);
+        var destroyedPositions = this.getTilePositions(tilesToRemove);
         var scoreAdded = this._scoreService.calculateScore(tiles.length);
+        var tileUpdates: TileUpdate[] = [];
+        
+        if (superTilePosition && superTileType) {
+            var superTile = grid.getTile(superTilePosition.row, superTilePosition.column);
 
-        this._gridService.removeTiles(grid, tiles);
+            if (superTile) {
+                superTile.changeType(superTileType);
+                tileUpdates.push({
+                    position: superTilePosition,
+                    tile: superTile,
+                });
+            }
+        }
+
+        this._gridService.removeTiles(grid, tilesToRemove);
 
         var tileMoves: TileMove[] = this._gridService.collapseColumns(grid);
         var tileSpawns: TileSpawn[] = this._gridService.refillEmptyCells(grid);
@@ -92,6 +115,7 @@ export class TurnResolver {
             destroyedPositions: destroyedPositions,
             tileMoves: tileMoves,
             tileSpawns: tileSpawns,
+            tileUpdates: tileUpdates,
             scoreAdded: scoreAdded,
             totalScore: this._session.score,
             movesLeft: this._session.movesLeft,
@@ -110,10 +134,27 @@ export class TurnResolver {
             destroyedPositions: [],
             tileMoves: [],
             tileSpawns: [],
+            tileUpdates: [],
             scoreAdded: 0,
             totalScore: this._session.score,
             movesLeft: this._session.movesLeft,
         };
+    }
+
+    private getTilesWithoutPosition(tiles: TileModel[], position: TilePosition): TileModel[] {
+        if (!position)
+            return tiles;
+
+        var result: TileModel[] = [];
+
+        for (var index = 0; index < tiles.length; index++) {
+            if (tiles[index].row === position.row && tiles[index].column === position.column)
+                continue;
+
+            result.push(tiles[index]);
+        }
+
+        return result;
     }
 
     private getTilePositions(tiles: TileModel[]): TilePosition[] {

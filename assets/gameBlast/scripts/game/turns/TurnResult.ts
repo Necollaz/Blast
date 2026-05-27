@@ -1,6 +1,7 @@
 import { TileMove } from "../../tiles/TileMove";
 import { TilePosition } from "../../tiles/TilePosition";
 import { TileSpawn } from "../../tiles/TileSpawn";
+import { TileUpdate } from "../../tiles/TileUpdate";
 
 export interface TurnResult {
     isValid: boolean;
@@ -13,6 +14,7 @@ export interface TurnResult {
     destroyedPositions: TilePosition[];
     tileMoves: TileMove[];
     tileSpawns: TileSpawn[];
+    tileUpdates: TileUpdate[];
     scoreAdded: number;
     totalScore: number;
     movesLeft: number;

@@ -7,8 +7,11 @@ import { GridModel } from "../../grid/model/GridModel";
 import { GridService } from "../../grid/services/GridService";
 import { BoardViewData } from "../../grid/view/BoardViewData";
 import { GridViewDataFactory } from "../../grid/view/GridViewDataFactory";
+import { SuperTileCreationService } from "../superTiles/SuperTileCreationService";
+import { SuperTileEffectService } from "../superTiles/SuperTileEffectService";
 import { TileModel } from "../../tiles/TileModel";
 import { TilePosition } from "../../tiles/TilePosition";
+import { TileType } from "../../tiles/TileType";
 import { GameRulesService } from "../rules/GameRulesService";
 import { GameSession } from "../session/GameSession";
 import { GameStateController } from "../state/GameStateController";
@@ -30,6 +33,8 @@ export class GameController {
     private _bombTurnService: BombTurnService;
     private _grid: GridModel = null;
     private _lastSelectedGroup: TileModel[] = [];
+    private _lastSuperTilePosition: TilePosition = null;
+    private _lastSuperTileType: TileType = null;
     private _firstTeleportPosition: TilePosition = null;
 
     public constructor(
@@ -53,15 +58,23 @@ export class GameController {
             this._session
         );
 
+        var superTileCreationService = new SuperTileCreationService(config);
+        var superTileEffectService = new SuperTileEffectService(config, this._gridService);
+
         this._boosterService = new BoosterService(config, this._gridService, this._session);
-        this._playerTurnService = new PlayerTurnService(this._gridService, this._turnResolver);
+        this._playerTurnService = new PlayerTurnService(
+            this._gridService,
+            this._turnResolver,
+            superTileCreationService,
+            superTileEffectService
+        );
         this._bombTurnService = new BombTurnService(config, this._gridService, this._boosterService, this._turnResolver);
     }
 
     public startNewGame(): void {
         this._session.reset();
         this.resetTeleportSelection();
-        this._lastSelectedGroup = [];
+        this.resetLastTurnData();
         this._stateController.enterBoot();
         this._grid = this._gridService.createInitialGrid();
         this._stateController.enterPlayerInput();
@@ -122,6 +135,9 @@ export class GameController {
         }
 
         this._lastSelectedGroup = playerTurnResult.selectedGroup;
+        this._lastSuperTilePosition = playerTurnResult.superTilePosition;
+        this._lastSuperTileType = playerTurnResult.superTileType;
+
         return playerTurnResult.turnResult;
     }
 
@@ -129,9 +145,15 @@ export class GameController {
         if (!this._stateController.isResolvingTurn())
             return this._turnResolver.createInvalidTurnResult();
 
-        var result = this._turnResolver.completeTilesDestroy(this._grid, this._lastSelectedGroup, true);
-        this._lastSelectedGroup = [];
+        var result = this._turnResolver.completeTilesDestroy(
+            this._grid,
+            this._lastSelectedGroup,
+            true,
+            this._lastSuperTilePosition,
+            this._lastSuperTileType
+        );
 
+        this.resetLastTurnData();
         this.changeTerminalStateIfNeeded(result);
 
         return result;
@@ -239,6 +261,7 @@ export class GameController {
             destroyedPositions: [],
             tileMoves: tileMoves,
             tileSpawns: [],
+            tileUpdates: [],
             scoreAdded: 0,
             totalScore: this._session.score,
             movesLeft: this._session.movesLeft,
@@ -257,6 +280,7 @@ export class GameController {
             destroyedPositions: [],
             tileMoves: [],
             tileSpawns: [],
+            tileUpdates: [],
             scoreAdded: 0,
             totalScore: this._session.score,
             movesLeft: this._session.movesLeft,
@@ -265,6 +289,12 @@ export class GameController {
 
     private resetTeleportSelection(): void {
         this._firstTeleportPosition = null;
+    }
+
+    private resetLastTurnData(): void {
+        this._lastSelectedGroup = [];
+        this._lastSuperTilePosition = null;
+        this._lastSuperTileType = null;
     }
 
     private changeTerminalStateIfNeeded(result: TurnResult): void {

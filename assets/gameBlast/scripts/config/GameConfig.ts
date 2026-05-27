@@ -9,4 +9,8 @@ export interface GameConfig {
     teleportBoostersCount: number;
     bombBoostersCount: number;
     bombRadius: number;
+    superTileLineMinGroupSize: number;
+    superTileRadiusMinGroupSize: number;
+    superTileClearBoardMinGroupSize: number;
+    superTileRadius: number;
 }

@@ -6,6 +6,8 @@ import {
 import { TileMove } from "../../tiles/TileMove";
 import { TilePosition } from "../../tiles/TilePosition";
 import { TileSpawn } from "../../tiles/TileSpawn";
+import { TileUpdate } from "../../tiles/TileUpdate";
+import { TileViewData } from "../../tiles/TileViewData";
 import { BoardAnimationPlayer } from "../animation/BoardAnimationPlayer";
 import { DestroyEffectPlayer } from "../animation/DestroyEffectPlayer";
 import { BoardTileFactory } from "../factory/BoardTileFactory";
@@ -22,6 +24,10 @@ export default class BoardView extends cc.Component {
     @property(cc.Prefab) private destroyEffectPrefab: cc.Prefab = null;
     @property(cc.Node) private tilesRoot: cc.Node = null;
     @property([cc.SpriteFrame]) private tileSprites: cc.SpriteFrame[] = [];
+    @property(cc.SpriteFrame) private rowRocketSprite: cc.SpriteFrame = null;
+    @property(cc.SpriteFrame) private columnRocketSprite: cc.SpriteFrame = null;
+    @property(cc.SpriteFrame) private radiusBombSprite: cc.SpriteFrame = null;
+    @property(cc.SpriteFrame) private clearBoardBombSprite: cc.SpriteFrame = null;
     @property private cellSize: number = DEFAULT_CELL_SIZE;
     @property private cellGap: number = DEFAULT_CELL_GAP;
     @property private tileScale: number = DEFAULT_TILE_SCALE;
@@ -34,9 +40,8 @@ export default class BoardView extends cc.Component {
     private _selectionHighlighter: TileSelectionHighlighter = null;
 
     public render(viewData: BoardViewData, clickHandler: (position: TilePosition) => void): void {
-        //
         cc.log("BoardView render tiles: " + viewData.tiles.length);
-        //
+
         this._clickHandler = clickHandler;
         this.ensureHelpers(viewData.rows, viewData.columns);
         this.clearTiles();
@@ -51,6 +56,29 @@ export default class BoardView extends cc.Component {
 
         if (this._selectionHighlighter)
             this._selectionHighlighter.clear();
+    }
+
+    public applyTileUpdates(tileUpdates: TileUpdate[]): void {
+        if (!tileUpdates || tileUpdates.length === 0)
+            return;
+
+        for (var index = 0; index < tileUpdates.length; index++) {
+            var tileUpdate = tileUpdates[index];
+            var tileView = this._registry.get(tileUpdate.position);
+
+            if (!tileView)
+                continue;
+
+            var tileData: TileViewData = {
+                id: tileUpdate.tile.id,
+                row: tileUpdate.tile.row,
+                column: tileUpdate.tile.column,
+                colorId: tileUpdate.tile.colorId,
+                type: tileUpdate.tile.type,
+            };
+
+            tileView.updateViewData(tileData, this._tileFactory.getSpriteFrame(tileData));
+        }
     }
 
     public setBombSelectionEnabled(isEnabled: boolean): void {
@@ -107,6 +135,10 @@ export default class BoardView extends cc.Component {
             root,
             this.tilePrefab,
             this.tileSprites,
+            this.rowRocketSprite,
+            this.columnRocketSprite,
+            this.radiusBombSprite,
+            this.clearBoardBombSprite,
             this.tileScale,
             this._layout,
             this._registry

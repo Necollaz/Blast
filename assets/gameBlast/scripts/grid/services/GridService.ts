@@ -44,6 +44,18 @@ export class GridService {
         return this._areaService.getTilesInRadius(grid, center, radius);
     }
 
+    public getTilesInRow(grid: GridModel, row: number): TileModel[] {
+        return this._areaService.getTilesInRow(grid, row);
+    }
+
+    public getTilesInColumn(grid: GridModel, column: number): TileModel[] {
+        return this._areaService.getTilesInColumn(grid, column);
+    }
+
+    public getAllTiles(grid: GridModel): TileModel[] {
+        return this._areaService.getAllTiles(grid);
+    }
+
     public removeTiles(grid: GridModel, tiles: TileModel[]): void {
         this._gravityService.removeTiles(grid, tiles);
     }
@@ -78,17 +90,17 @@ export class GridService {
         if (!firstTile || !secondTile)
             return [];
 
-        var firstFrom = { row: first.row, column: first.column };
-        var firstTo = { row: second.row, column: second.column };
-        var secondFrom = { row: second.row, column: second.column };
-        var secondTo = { row: first.row, column: first.column };
+        var firstFrom = {row: first.row, column: first.column};
+        var firstTo = {row: second.row, column: second.column};
+        var secondFrom = {row: second.row, column: second.column};
+        var secondTo = {row: first.row, column: first.column};
 
         grid.setTile(first.row, first.column, secondTile);
         grid.setTile(second.row, second.column, firstTile);
 
         return [
-            { tile: firstTile, from: firstFrom, to: firstTo },
-            { tile: secondTile, from: secondFrom, to: secondTo },
+            {tile: firstTile, from: firstFrom, to: firstTo},
+            {tile: secondTile, from: secondFrom, to: secondTo},
         ];
     }
 }

@@ -99,7 +99,7 @@ export class TurnPipeline {
             return;
 
         this._uiPresenter.renderHud();
-
+        this._boardView.applyTileUpdates(resolvedTurnResult.tileUpdates);
         this._boardView.playFallAnimation(
             resolvedTurnResult.tileMoves,
             () => this.playSpawnAnimation(resolvedTurnResult)
