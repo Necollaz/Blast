@@ -1,25 +1,23 @@
 import { BoosterMode } from "../../boosters/BoosterMode";
 import { BoosterService } from "../../boosters/BoosterService";
 import { GameConfig } from "../../config/GameConfig";
-import { ScoreService } from "../../core/services/ScoreService";
 import { StateMachine } from "../../core/StateMachine";
 import { GridModel } from "../../grid/model/GridModel";
 import { GridService } from "../../grid/services/GridService";
 import { BoardViewData } from "../../grid/view/BoardViewData";
 import { GridViewDataFactory } from "../../grid/view/GridViewDataFactory";
-import { SuperTileCreationService } from "../superTiles/SuperTileCreationService";
-import { SuperTileEffectService } from "../superTiles/SuperTileEffectService";
 import { TileModel } from "../../tiles/TileModel";
 import { TilePosition } from "../../tiles/TilePosition";
 import { TileType } from "../../tiles/TileType";
-import { GameRulesService } from "../rules/GameRulesService";
 import { GameSession } from "../session/GameSession";
 import { GameStateController } from "../state/GameStateController";
 import { GameStateId } from "../state/GameStateId";
 import { BombTurnService } from "../turns/bomb/BombTurnService";
 import { PlayerTurnService } from "../turns/player/PlayerTurnService";
+import { TeleportTurnService } from "../turns/teleport/TeleportTurnService";
 import { TurnResolver } from "../turns/TurnResolver";
 import { TurnResult } from "../turns/TurnResult";
+import { GameControllerDependencies } from "./GameControllerDependencies";
 
 export class GameController {
     private _config: GameConfig;
@@ -31,49 +29,28 @@ export class GameController {
     private _boosterService: BoosterService;
     private _playerTurnService: PlayerTurnService;
     private _bombTurnService: BombTurnService;
+    private _teleportTurnService: TeleportTurnService;
     private _grid: GridModel = null;
     private _lastSelectedGroup: TileModel[] = [];
     private _lastSuperTilePosition: TilePosition = null;
     private _lastSuperTileType: TileType = null;
-    private _firstTeleportPosition: TilePosition = null;
 
-    public constructor(
-        config: GameConfig,
-        gridService: GridService = null,
-        scoreService: ScoreService = null,
-        gridViewDataFactory: GridViewDataFactory = null
-    ) {
-        this._config = config;
-        this._gridService = gridService || new GridService(config);
-        this._gridViewDataFactory = gridViewDataFactory || new GridViewDataFactory();
-        this._stateController = new GameStateController();
-        this._session = new GameSession(config);
-
-        var rulesService = new GameRulesService(config, this._gridService);
-
-        this._turnResolver = new TurnResolver(
-            this._gridService,
-            scoreService || new ScoreService(),
-            rulesService,
-            this._session
-        );
-
-        var superTileCreationService = new SuperTileCreationService(config);
-        var superTileEffectService = new SuperTileEffectService(config, this._gridService);
-
-        this._boosterService = new BoosterService(config, this._gridService, this._session);
-        this._playerTurnService = new PlayerTurnService(
-            this._gridService,
-            this._turnResolver,
-            superTileCreationService,
-            superTileEffectService
-        );
-        this._bombTurnService = new BombTurnService(config, this._gridService, this._boosterService, this._turnResolver);
+    public constructor(dependencies: GameControllerDependencies) {
+        this._config = dependencies.config;
+        this._gridService = dependencies.gridService;
+        this._gridViewDataFactory = dependencies.gridViewDataFactory;
+        this._stateController = dependencies.stateController;
+        this._session = dependencies.session;
+        this._turnResolver = dependencies.turnResolver;
+        this._boosterService = dependencies.boosterService;
+        this._playerTurnService = dependencies.playerTurnService;
+        this._bombTurnService = dependencies.bombTurnService;
+        this._teleportTurnService = dependencies.teleportTurnService;
     }
 
     public startNewGame(): void {
         this._session.reset();
-        this.resetTeleportSelection();
+        this._teleportTurnService.reset();
         this.resetLastTurnData();
         this._stateController.enterBoot();
         this._grid = this._gridService.createInitialGrid();
@@ -102,7 +79,7 @@ export class GameController {
         if (!this._boosterService.activateTeleportBooster())
             return false;
 
-        this.resetTeleportSelection();
+        this._teleportTurnService.reset();
         this._stateController.enterTeleportSelection();
         return true;
     }
@@ -111,7 +88,7 @@ export class GameController {
         if (this._stateController.isBombSelection() || this._stateController.isTeleportSelection())
             this._stateController.enterPlayerInput();
 
-        this.resetTeleportSelection();
+        this._teleportTurnService.reset();
         this._boosterService.cancelBoosterMode();
     }
 
@@ -131,6 +108,7 @@ export class GameController {
 
         if (!playerTurnResult.turnResult.isValid) {
             this._stateController.enterPlayerInput();
+            
             return playerTurnResult.turnResult;
         }
 
@@ -172,10 +150,8 @@ export class GameController {
     }
 
     public completeTurn(): void {
-        if (!this._stateController.isResolvingTurn())
-            return;
-
-        this._stateController.enterPlayerInput();
+        if (this._stateController.isResolvingTurn())
+            this._stateController.enterPlayerInput();
     }
 
     public getBoardViewData(): BoardViewData {
@@ -217,6 +193,7 @@ export class GameController {
 
         if (!result.isValid) {
             this._stateController.enterPlayerInput();
+            
             return result;
         }
 
@@ -226,69 +203,12 @@ export class GameController {
     }
 
     private handleTeleportClick(position: TilePosition): TurnResult {
-        var tile = this._grid.getTile(position.row, position.column);
+        var result = this._teleportTurnService.createTurn(this._grid, position);
 
-        if (!tile)
-            return this._turnResolver.createInvalidTurnResult();
+        if (result.isValid && !result.isPendingSelection)
+            this._stateController.enterResolvingTurn();
 
-        if (!this._firstTeleportPosition) {
-            this._firstTeleportPosition = { row: position.row, column: position.column };
-            return this.createPendingTeleportSelectionResult(this._firstTeleportPosition);
-        }
-
-        if (this._firstTeleportPosition.row === position.row && this._firstTeleportPosition.column === position.column)
-            return this.createPendingTeleportSelectionResult(this._firstTeleportPosition);
-
-        var tileMoves = this._gridService.swapTiles(this._grid, this._firstTeleportPosition, position);
-
-        if (tileMoves.length === 0)
-            return this._turnResolver.createInvalidTurnResult();
-
-        if (!this._boosterService.spendTeleportBooster())
-            return this._turnResolver.createInvalidTurnResult();
-
-        this.resetTeleportSelection();
-        this._stateController.enterResolvingTurn();
-
-        return {
-            isValid: true,
-            isModelResolved: true,
-            isPendingSelection: false,
-            isSwap: true,
-            selectedPosition: null,
-            isWin: false,
-            isLose: false,
-            destroyedPositions: [],
-            tileMoves: tileMoves,
-            tileSpawns: [],
-            tileUpdates: [],
-            scoreAdded: 0,
-            totalScore: this._session.score,
-            movesLeft: this._session.movesLeft,
-        };
-    }
-
-    private createPendingTeleportSelectionResult(position: TilePosition): TurnResult {
-        return {
-            isValid: true,
-            isModelResolved: false,
-            isPendingSelection: true,
-            isSwap: false,
-            selectedPosition: position,
-            isWin: false,
-            isLose: false,
-            destroyedPositions: [],
-            tileMoves: [],
-            tileSpawns: [],
-            tileUpdates: [],
-            scoreAdded: 0,
-            totalScore: this._session.score,
-            movesLeft: this._session.movesLeft,
-        };
-    }
-
-    private resetTeleportSelection(): void {
-        this._firstTeleportPosition = null;
+        return result;
     }
 
     private resetLastTurnData(): void {

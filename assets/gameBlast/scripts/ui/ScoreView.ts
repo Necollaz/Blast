@@ -1,4 +1,4 @@
-import { SCORE_LABEL_SEPARATOR } from "../core/constants/ScoreViewConstants";
+import { SCORE_LABEL_SEPARATOR } from "../core/constants/UiConstants";
 
 const { ccclass, property } = cc._decorator;
 

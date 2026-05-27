@@ -1,4 +1,9 @@
-import { SCORE_LABEL_SEPARATOR } from "../core/constants/ScoreViewConstants";
+import {
+    POPUP_HIDDEN_SCALE,
+    POPUP_SHOW_DURATION,
+    POPUP_VISIBLE_SCALE,
+    SCORE_LABEL_SEPARATOR
+} from "../core/constants/UiConstants";
 
 const { ccclass, property } = cc._decorator;
 
@@ -29,7 +34,7 @@ export default class GameResultPopupView extends cc.Component {
 
     private show(score: number, targetScore: number, isWin: boolean): void {
         this.node.active = true;
-        this.node.scale = 0;
+        this.node.scale = POPUP_HIDDEN_SCALE;
 
         this.setNodeActive(this.background, true);
         this.setNodeActive(this.titleLabelBackgroundImage, true);
@@ -41,7 +46,7 @@ export default class GameResultPopupView extends cc.Component {
             this.scoreLabel.string = score + SCORE_LABEL_SEPARATOR + targetScore;
 
         cc.tween(this.node)
-            .to(0.2, { scale: 1 })
+            .to(POPUP_SHOW_DURATION, { scale: POPUP_VISIBLE_SCALE })
             .start();
     }
 

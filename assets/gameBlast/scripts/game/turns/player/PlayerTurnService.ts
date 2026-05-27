@@ -1,9 +1,3 @@
-import {
-    TILE_CLICK_COLUMN_LOG_PART,
-    TILE_CLICK_LOG_MESSAGE,
-    TILE_GROUP_IS_TOO_SMALL_LOG_MESSAGE,
-    TILE_GROUP_SIZE_LOG_MESSAGE
-} from "../../../core/constants/GameControllerConstants";
 import { GridModel } from "../../../grid/model/GridModel";
 import { GridService } from "../../../grid/services/GridService";
 import { SuperTileCreationService } from "../../superTiles/SuperTileCreationService";
@@ -42,7 +36,7 @@ export class PlayerTurnService {
                 superTileType: null,
             };
         }
-        
+
         if (clickedTile.type !== TileType.Default) {
             var affectedTiles = this._superTileEffectService.getAffectedTiles(grid, position);
 
@@ -65,11 +59,7 @@ export class PlayerTurnService {
 
         var selectedGroup = this._gridService.findGroup(grid, position);
 
-        cc.log(TILE_GROUP_SIZE_LOG_MESSAGE + selectedGroup.length);
-
         if (selectedGroup.length === 0) {
-            cc.log(TILE_GROUP_IS_TOO_SMALL_LOG_MESSAGE);
-
             return {
                 turnResult: this._turnResolver.createInvalidTurnResult(),
                 selectedGroup: [],
@@ -77,7 +67,7 @@ export class PlayerTurnService {
                 superTileType: null,
             };
         }
-        
+
         var superTileType = this._superTileCreationService.getSuperTileType(selectedGroup, position);
         var superTilePosition = superTileType ? position : null;
 

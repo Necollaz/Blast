@@ -1,10 +1,4 @@
 import { GameConfig } from "../config/GameConfig";
-import {
-    LOSE_BY_AVAILABLE_GROUPS_LOG_MESSAGE,
-    SHUFFLE_ATTEMPT_LOG_MESSAGE,
-    SHUFFLE_ATTEMPT_SEPARATOR,
-    SHUFFLE_SUCCESS_LOG_MESSAGE
-} from "../core/constants/GameControllerConstants";
 import { GameSession } from "../game/session/GameSession";
 import { GridModel } from "../grid/model/GridModel";
 import { GridService } from "../grid/services/GridService";
@@ -66,11 +60,10 @@ export class BoosterService {
         while (this._session.useShuffleAttempt()) {
             this._gridService.shuffleTiles(grid);
 
-            if (this._gridService.hasAvailableGroup(grid)) {
+            if (this._gridService.hasAvailableGroup(grid))
                 return false;
-            }
         }
-        
+
         return true;
     }
 }

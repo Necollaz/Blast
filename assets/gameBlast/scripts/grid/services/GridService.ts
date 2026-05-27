@@ -9,6 +9,7 @@ import { GridFactory } from "./GridFactory";
 import { GridGravityService } from "./GridGravityService";
 import { GridRefillService } from "./GridRefillService";
 import { GridShuffleService } from "./GridShuffleService";
+import { GridSwapService } from "./GridSwapService";
 import { GroupFinder } from "./GroupFinder";
 
 export class GridService {
@@ -18,6 +19,7 @@ export class GridService {
     private _refillService: GridRefillService;
     private _shuffleService: GridShuffleService;
     private _areaService: GridAreaService;
+    private _swapService: GridSwapService;
 
     public constructor(config: GameConfig, random: () => number = Math.random) {
         this._gridFactory = new GridFactory(config, random);
@@ -26,6 +28,7 @@ export class GridService {
         this._refillService = new GridRefillService(this._gridFactory);
         this._shuffleService = new GridShuffleService(random);
         this._areaService = new GridAreaService();
+        this._swapService = new GridSwapService();
     }
 
     public createInitialGrid(): GridModel {
@@ -81,26 +84,6 @@ export class GridService {
     }
 
     public swapTiles(grid: GridModel, first: TilePosition, second: TilePosition): TileMove[] {
-        if (first.row === second.row && first.column === second.column)
-            return [];
-
-        var firstTile = grid.getTile(first.row, first.column);
-        var secondTile = grid.getTile(second.row, second.column);
-
-        if (!firstTile || !secondTile)
-            return [];
-
-        var firstFrom = {row: first.row, column: first.column};
-        var firstTo = {row: second.row, column: second.column};
-        var secondFrom = {row: second.row, column: second.column};
-        var secondTo = {row: first.row, column: first.column};
-
-        grid.setTile(first.row, first.column, secondTile);
-        grid.setTile(second.row, second.column, firstTile);
-
-        return [
-            {tile: firstTile, from: firstFrom, to: firstTo},
-            {tile: secondTile, from: secondFrom, to: secondTo},
-        ];
+        return this._swapService.swapTiles(grid, first, second);
     }
 }

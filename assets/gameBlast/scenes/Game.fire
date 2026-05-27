@@ -834,7 +834,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "92291fc0-6731-4809-be54-c448f334b663"
+      "__uuid__": "7d12da7a-7e0f-4a9b-be80-d6fc7dc68a6e"
     },
     "_type": 1,
     "_sizeMode": 0,
@@ -2224,7 +2224,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "0d3f9b49-8133-4fe7-906c-275e05b21f8f"
+      "__uuid__": "4d239209-afc8-449f-a7fd-fa4721eeceff"
     },
     "_type": 1,
     "_sizeMode": 0,
@@ -2736,7 +2736,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "IconRefreshBuster",
+    "_name": "IconBombBuster",
     "_objFlags": 0,
     "_parent": {
       "__id__": 60
@@ -3048,7 +3048,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "0d3f9b49-8133-4fe7-906c-275e05b21f8f"
+      "__uuid__": "4d239209-afc8-449f-a7fd-fa4721eeceff"
     },
     "_type": 1,
     "_sizeMode": 0,
@@ -4419,7 +4419,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "7d12da7a-7e0f-4a9b-be80-d6fc7dc68a6e"
+      "__uuid__": "0d3f9b49-8133-4fe7-906c-275e05b21f8f"
     },
     "_type": 1,
     "_sizeMode": 0,

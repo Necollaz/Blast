@@ -1,4 +1,5 @@
 import { BoosterService } from "../../../boosters/BoosterService";
+import { GameSession } from "../../session/GameSession";
 import { GridModel } from "../../../grid/model/GridModel";
 import { GridService } from "../../../grid/services/GridService";
 import { TilePosition } from "../../../tiles/TilePosition";
@@ -9,16 +10,19 @@ export class TeleportTurnService {
     private _gridService: GridService;
     private _boosterService: BoosterService;
     private _turnResolver: TurnResolver;
+    private _session: GameSession;
     private _firstPosition: TilePosition = null;
 
     public constructor(
         gridService: GridService,
         boosterService: BoosterService,
-        turnResolver: TurnResolver
+        turnResolver: TurnResolver,
+        session: GameSession
     ) {
         this._gridService = gridService;
         this._boosterService = boosterService;
         this._turnResolver = turnResolver;
+        this._session = session;
     }
 
     public reset(): void {
@@ -33,6 +37,7 @@ export class TeleportTurnService {
 
         if (!this._firstPosition) {
             this._firstPosition = { row: position.row, column: position.column };
+            
             return this.createPendingSelectionResult(this._firstPosition);
         }
 
@@ -62,8 +67,8 @@ export class TeleportTurnService {
             tileSpawns: [],
             tileUpdates: [],
             scoreAdded: 0,
-            totalScore: 0,
-            movesLeft: 0,
+            totalScore: this._session.score,
+            movesLeft: this._session.movesLeft,
         };
     }
 
@@ -81,8 +86,8 @@ export class TeleportTurnService {
             tileSpawns: [],
             tileUpdates: [],
             scoreAdded: 0,
-            totalScore: 0,
-            movesLeft: 0,
+            totalScore: this._session.score,
+            movesLeft: this._session.movesLeft,
         };
     }
 }

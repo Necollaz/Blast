@@ -1,11 +1,3 @@
-import {
-    LOSE_BY_MOVES_LOG_MESSAGE,
-    MOVES_LEFT_LOG_MESSAGE,
-    SCORE_ADDED_LOG_MESSAGE,
-    TILE_DESTROYED_LOG_MESSAGE,
-    TOTAL_SCORE_LOG_MESSAGE,
-    WIN_LOG_MESSAGE
-} from "../../core/constants/GameControllerConstants";
 import { ScoreService } from "../../core/services/ScoreService";
 import { GridModel } from "../../grid/model/GridModel";
 import { GridService } from "../../grid/services/GridService";
@@ -67,7 +59,7 @@ export class TurnResolver {
         var destroyedPositions = this.getTilePositions(tilesToRemove);
         var scoreAdded = this._scoreService.calculateScore(tiles.length);
         var tileUpdates: TileUpdate[] = [];
-        
+
         if (superTilePosition && superTileType) {
             var superTile = grid.getTile(superTilePosition.row, superTilePosition.column);
 

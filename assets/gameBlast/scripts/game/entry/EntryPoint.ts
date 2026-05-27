@@ -1,11 +1,11 @@
 import { DEFAULT_GAME_CONFIG } from "../../config/GameConfigDefaults";
-import { ENTRY_POINT_INITIALIZED_MESSAGE } from "../../core/constants/EntryPointConstants";
 import BoardView from "../../grid/view/BoardView";
 import BoostersPanelView from "../../ui/BoostersPanelView";
 import GameResultPopupView from "../../ui/GameResultPopupView";
 import MovesView from "../../ui/MovesView";
 import ScoreView from "../../ui/ScoreView";
 import { GameController } from "../controllers/GameController";
+import { GameControllerFactory } from "../controllers/GameControllerFactory";
 import { TurnPipeline } from "../flow/TurnPipeline";
 import { GameUiPresenter } from "../presentation/GameUiPresenter";
 
@@ -46,7 +46,7 @@ export default class EntryPoint extends cc.Component {
     }
 
     private createGame(): void {
-        this._gameController = new GameController(DEFAULT_GAME_CONFIG);
+        this._gameController = new GameControllerFactory().create(DEFAULT_GAME_CONFIG);
         this._uiPresenter = new GameUiPresenter(
             this._gameController,
             this.boardView,

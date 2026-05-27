@@ -1,3 +1,8 @@
+import {
+    BOOSTER_DEFAULT_OPACITY,
+    BOOSTER_SELECTED_OPACITY
+} from "../core/constants/UiConstants";
+
 const { ccclass, property } = cc._decorator;
 
 @ccclass
@@ -26,9 +31,9 @@ export default class BoostersPanelView extends cc.Component {
             this.bombButton.interactable = bombCount > 0;
 
         if (this.teleportButton)
-            this.teleportButton.node.opacity = isTeleportSelected ? 180 : 255;
+            this.teleportButton.node.opacity = isTeleportSelected ? BOOSTER_SELECTED_OPACITY : BOOSTER_DEFAULT_OPACITY;
 
         if (this.bombButton)
-            this.bombButton.node.opacity = isBombSelected ? 180 : 255;
+            this.bombButton.node.opacity = isBombSelected ? BOOSTER_SELECTED_OPACITY : BOOSTER_DEFAULT_OPACITY;
     }
 }

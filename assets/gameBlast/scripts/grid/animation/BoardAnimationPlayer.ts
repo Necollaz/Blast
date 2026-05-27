@@ -33,6 +33,7 @@ export class BoardAnimationPlayer {
     public playMoveAnimation(tileMoves: TileMove[], onComplete: () => void): void {
         if (tileMoves.length === 0) {
             onComplete();
+            
             return;
         }
 
@@ -67,6 +68,7 @@ export class BoardAnimationPlayer {
     public playDestroyAnimation(positions: TilePosition[], onComplete: () => void): void {
         if (positions.length === 0) {
             onComplete();
+            
             return;
         }
 
@@ -98,40 +100,6 @@ export class BoardAnimationPlayer {
     public playFallAnimation(tileMoves: TileMove[], onComplete: () => void): void {
         this.playMoveAnimation(tileMoves, onComplete);
     }
-    
-    // public playFallAnimation(tileMoves: TileMove[], onComplete: () => void): void {
-    //     if (tileMoves.length === 0) {
-    //         onComplete();
-    //         return;
-    //     }
-    //
-    //     var completedCount = 0;
-    //
-    //     for (var index = 0; index < tileMoves.length; index++) {
-    //         var tileMove = tileMoves[index];
-    //         var tileView = this._registry.get(tileMove.from);
-    //
-    //         if (!tileView) {
-    //             completedCount++;
-    //
-    //             if (completedCount >= tileMoves.length)
-    //                 onComplete();
-    //
-    //             continue;
-    //         }
-    //
-    //         tileView.playMoveAnimation(
-    //             this._layout.getTilePosition(tileMove.to.row, tileMove.to.column),
-    //             this.getFallDuration(tileMove),
-    //             () => {
-    //                 completedCount++;
-    //
-    //                 if (completedCount >= tileMoves.length)
-    //                     onComplete();
-    //             }
-    //         );
-    //     }
-    // }
 
     public playSpawnAnimation(
         tileSpawns: TileSpawn[],
@@ -141,6 +109,7 @@ export class BoardAnimationPlayer {
     ): void {
         if (tileSpawns.length === 0) {
             onComplete();
+            
             return;
         }
 

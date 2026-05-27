@@ -8,11 +8,8 @@ export const TILE_DESTROY_EFFECT_NODE_NAME: string = "TileDestroyEffect";
 export const CENTER_OFFSET_DIVIDER: number = 2;
 export const BOARD_POSITION_KEY_SEPARATOR: string = ":";
 
-export const DEBUG_GRID_DEFAULT_ROWS: number = 9;
-export const DEBUG_GRID_DEFAULT_COLUMNS: number = 9;
-export const DEBUG_GRID_NODE_NAME: string = "DebugGrid";
-export const DEBUG_GRID_LINE_WIDTH: number = 2;
-export const DEBUG_GRID_BORDER_WIDTH: number = 4;
-export const DEBUG_GRID_LINE_COLOR: cc.Color = cc.color(0, 255, 255, 180);
-export const DEBUG_GRID_BORDER_COLOR: cc.Color = cc.color(255, 255, 0, 220);
-export const DEBUG_GRID_FILL_COLOR: cc.Color = cc.color(0, 80, 120, 40);
+export const PADDING_SIDES_COUNT: number = 2;
+export const LAST_INDEX_OFFSET: number = 1;
+export const MIN_AVAILABLE_SIZE: number = 0;
+export const MIN_CELL_SIZE: number = 1;
+export const MIN_GAP_COUNT: number = 0;
