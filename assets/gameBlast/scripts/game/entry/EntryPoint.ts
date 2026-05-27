@@ -26,7 +26,6 @@ export default class EntryPoint extends cc.Component {
     protected onLoad(): void {
         this.createGame();
         this.startGame();
-        cc.log(ENTRY_POINT_INITIALIZED_MESSAGE);
     }
 
     protected update(dt: number): void {
@@ -60,9 +59,6 @@ export default class EntryPoint extends cc.Component {
     }
 
     private startGame(): void {
-        //
-        cc.log("Start game");
-        //
         this._gameController.startNewGame();
         this._turnPipeline.renderInitialState();
     }

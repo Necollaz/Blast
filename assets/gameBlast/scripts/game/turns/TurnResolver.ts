@@ -93,17 +93,6 @@ export class TurnResolver {
         var isWin = this._rulesService.isWin(this._session.score);
         var isLoseByMoves = this._rulesService.isLoseByMoves(this._session.score, this._session.movesLeft);
 
-        cc.log(TILE_DESTROYED_LOG_MESSAGE + tiles.length);
-        cc.log(SCORE_ADDED_LOG_MESSAGE + scoreAdded);
-        cc.log(TOTAL_SCORE_LOG_MESSAGE + this._session.score);
-        cc.log(MOVES_LEFT_LOG_MESSAGE + this._session.movesLeft);
-
-        if (isWin)
-            cc.log(WIN_LOG_MESSAGE);
-
-        if (isLoseByMoves)
-            cc.log(LOSE_BY_MOVES_LOG_MESSAGE);
-
         return {
             isValid: true,
             isModelResolved: true,

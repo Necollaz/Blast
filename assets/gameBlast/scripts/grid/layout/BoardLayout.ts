@@ -13,9 +13,11 @@ export class BoardLayout {
         this._cellGap = cellGap;
     }
 
-    public setGridSize(rows: number, columns: number): void {
+    public setGridSettings(rows: number, columns: number, cellSize: number, cellGap: number): void {
         this._rows = rows;
         this._columns = columns;
+        this._cellSize = cellSize;
+        this._cellGap = cellGap;
     }
 
     public getTilePosition(row: number, column: number): cc.Vec2 {
@@ -44,5 +46,13 @@ export class BoardLayout {
 
     public get columns(): number {
         return this._columns;
+    }
+
+    public get cellSize(): number {
+        return this._cellSize;
+    }
+
+    public get cellGap(): number {
+        return this._cellGap;
     }
 }

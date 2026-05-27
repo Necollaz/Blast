@@ -641,6 +641,9 @@
     "tilesRoot": {
       "__id__": 12
     },
+    "boardBoundsNode": {
+      "__id__": 9
+    },
     "tileSprites": [
       {
         "__uuid__": "caaea0ba-7da8-48c0-a56f-a812080ba9b8"
@@ -673,6 +676,9 @@
     "cellSize": 100,
     "cellGap": 4,
     "tileScale": 1,
+    "boardPadding": 40,
+    "tileSourceSize": 100,
+    "useResponsiveLayout": true,
     "_id": "0fV/n3wGtCioBCCU2J+NHz"
   },
   {

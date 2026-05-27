@@ -15,12 +15,18 @@ export default class TileView extends cc.Component {
     private _animator: TileAnimator = null;
 
     protected onLoad(): void {
+        this.node.on(cc.Node.EventType.TOUCH_START, this.handleTouchStart, this);
+        this.node.on(cc.Node.EventType.TOUCH_MOVE, this.handleTouchMove, this);
         this.node.on(cc.Node.EventType.TOUCH_END, this.handleClick, this);
+        this.node.on(cc.Node.EventType.TOUCH_CANCEL, this.handleTouchCancel, this);
         this.node.on(cc.Node.EventType.MOUSE_ENTER, this.handleMouseEnter, this);
     }
 
     protected onDestroy(): void {
+        this.node.off(cc.Node.EventType.TOUCH_START, this.handleTouchStart, this);
+        this.node.off(cc.Node.EventType.TOUCH_MOVE, this.handleTouchMove, this);
         this.node.off(cc.Node.EventType.TOUCH_END, this.handleClick, this);
+        this.node.off(cc.Node.EventType.TOUCH_CANCEL, this.handleTouchCancel, this);
         this.node.off(cc.Node.EventType.MOUSE_ENTER, this.handleMouseEnter, this);
     }
 
@@ -84,12 +90,27 @@ export default class TileView extends cc.Component {
             this.sprite.spriteFrame = spriteFrame;
     }
 
+    private handleTouchStart(): void {
+        this.handleHover();
+    }
+
+    private handleTouchMove(): void {
+        this.handleHover();
+    }
+
+    private handleTouchCancel(): void {
+    }
+
     private handleClick(): void {
         if (this._viewData && this._clickHandler)
             this._clickHandler({ row: this._viewData.row, column: this._viewData.column });
     }
 
     private handleMouseEnter(): void {
+        this.handleHover();
+    }
+
+    private handleHover(): void {
         if (this._viewData && this._hoverHandler)
             this._hoverHandler({ row: this._viewData.row, column: this._viewData.column });
     }

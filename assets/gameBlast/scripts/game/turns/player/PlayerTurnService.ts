@@ -32,8 +32,6 @@ export class PlayerTurnService {
     }
 
     public createTurn(grid: GridModel, position: TilePosition): PlayerTurnResult {
-        cc.log(TILE_CLICK_LOG_MESSAGE + position.row + TILE_CLICK_COLUMN_LOG_PART + position.column);
-
         var clickedTile = grid.getTile(position.row, position.column);
 
         if (!clickedTile) {

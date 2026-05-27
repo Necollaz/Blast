@@ -64,22 +64,13 @@ export class BoosterService {
             return false;
 
         while (this._session.useShuffleAttempt()) {
-            cc.log(
-                SHUFFLE_ATTEMPT_LOG_MESSAGE
-                + this._session.shuffleAttemptsUsed
-                + SHUFFLE_ATTEMPT_SEPARATOR
-                + this._config.shuffleAttemptsLimit
-            );
-
             this._gridService.shuffleTiles(grid);
 
             if (this._gridService.hasAvailableGroup(grid)) {
-                cc.log(SHUFFLE_SUCCESS_LOG_MESSAGE);
                 return false;
             }
         }
-
-        cc.log(LOSE_BY_AVAILABLE_GROUPS_LOG_MESSAGE);
+        
         return true;
     }
 }

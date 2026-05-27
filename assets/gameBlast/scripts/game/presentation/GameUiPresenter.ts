@@ -32,10 +32,6 @@ export class GameUiPresenter {
     }
 
     public renderBoard(clickHandler: (position: TilePosition) => void): void {
-        //
-        cc.log("Render board. BoardView exists: " + !!this._boardView);
-        //
-        
         if (!this._boardView)
             return;
 

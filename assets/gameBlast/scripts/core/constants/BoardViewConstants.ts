@@ -1,6 +1,8 @@
-export const DEFAULT_CELL_SIZE: number = 72;
+export const DEFAULT_CELL_SIZE: number = 100;
 export const DEFAULT_CELL_GAP: number = 4;
-export const DEFAULT_TILE_SCALE: number = 0.72;
+export const DEFAULT_TILE_SCALE: number = 1;
+export const DEFAULT_BOARD_PADDING: number = 40;
+export const DEFAULT_TILE_SOURCE_SIZE: number = 100;
 export const TILE_VIEW_NODE_NAME: string = "TileView";
 export const TILE_DESTROY_EFFECT_NODE_NAME: string = "TileDestroyEffect";
 export const CENTER_OFFSET_DIVIDER: number = 2;
